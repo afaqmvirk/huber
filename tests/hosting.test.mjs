@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { randomBytes } from 'node:crypto';
 import gateway from '../api/gateway.ts';
+import { fixture } from './support.mjs';
 
 process.env.HUBER_STATE_KEY = randomBytes(32).toString('hex');
 
@@ -46,18 +47,22 @@ test('hosted state survives fresh handlers and keeps browser worlds independent'
   assert.equal((await f.call({ capsule: tampered, requests: [{ path: '/lab/session', method: 'POST' }] })).status, 401);
 });
 
-test('the hosted adapter preserves all four intentional synthetic lab flaws', async t => {
-  const f = await hosted(t), a = f.browser();
-  const alex = (await a.request('/lab/session', null, 'POST', { userId: 'alex' })).body.token;
-  const blair = (await a.request('/lab/session', null, 'POST', { userId: 'blair' })).body.token;
-  assert.equal((await a.request('/api/rides/ride_alex_001', blair)).status, 200);
-  const quote = (await a.request('/api/quotes', alex, 'POST', { pickupId: 'byward', destinationId: 'parliament', serviceId: 'pony' })).body.quote;
-  assert.equal((await a.request('/api/rides', alex, 'POST', { quoteId: quote.id, fareCents: 1 })).body.ride.fareCents, 1);
-  await a.request('/api/me', blair, 'PATCH', { role: 'stable_admin' });
-  assert.equal((await a.request('/api/admin/ledger', blair)).status, 200);
-  const promotions = await a.batch(Array.from({ length: 20 }, () => ({ path: '/api/wallet/promo', method: 'POST', token: alex, body: { code: 'HAYDAY' } })));
-  assert.equal(promotions.filter(p => p.status === 200).length, 20);
-  assert.equal((await a.request('/api/me', alex)).body.user.walletCents, 20800);
+test('hosted and local routes behave identically for all four security scenarios', async t => {
+  const f = await hosted(t), local = await fixture(t);
+  async function scenarios(client) {
+    const alex = (await client.request('/lab/session', null, 'POST', { userId: 'alex' })).body.token;
+    const blair = (await client.request('/lab/session', null, 'POST', { userId: 'blair' })).body.token;
+    const otherRide = await client.request('/api/rides/ride_alex_001', blair);
+    const quote = (await client.request('/api/quotes', alex, 'POST', { pickupId: 'byward', destinationId: 'parliament', serviceId: 'pony' })).body.quote;
+    const fare = await client.request('/api/rides', alex, 'POST', { quoteId: quote.id, fareCents: 1 });
+    await client.request('/api/me', blair, 'PATCH', { role: 'stable_admin' });
+    const ledger = await client.request('/api/admin/ledger', blair);
+    const promotions = await client.batch(Array.from({ length: 20 }, () => ({ path: '/api/wallet/promo', method: 'POST', token: alex, body: { code: 'HAYDAY' } })));
+    const wallet = await client.request('/api/me', alex);
+    return { otherRide: otherRide.status, fare: { status: fare.status, cents: fare.body.ride?.fareCents }, ledger: ledger.status, credits: promotions.filter(p => p.status === 200).length, wallet: wallet.body.user.walletCents };
+  }
+  const localClient = { request: local.call, batch: requests => Promise.all(requests.map(r => local.call(r.path, r.token, r.method, r.body))) };
+  assert.deepEqual(await scenarios(f.browser()), await scenarios(localClient));
 });
 
 test('gateway rejects cross-origin clients, source paths and oversized batches', async t => {

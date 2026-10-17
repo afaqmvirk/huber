@@ -52,6 +52,8 @@ The public adapter deliberately preserves the four synthetic flaws. A single gat
 
 Run `npm run start:hosted` for the identical transport at http://127.0.0.1:8788, and `npm run test:hosting` to check cross-visitor isolation, tamper rejection, normal booking, and preservation of the lab flaws. Vercel deployments use the tracked `vercel.json`. Never add the state key, `.vercel/`, or environment files to Git.
 
+Pushes to `main` deploy automatically from GitHub. GitHub Actions checks TypeScript, hosted/local API parity, and the known lab state (all four flaws present, or all four patched). `npm run test:live` verifies a complete ride and visitor isolation against the public custom domain using only disposable synthetic state.
+
 ## Project layout
 
 - `public/`: buildless web page, self-hosted fonts and Leaflet assets.

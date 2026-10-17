@@ -21,6 +21,7 @@
     "check": "tsc --noEmit",
     "test": "node --test tests/functional.test.mjs",
     "test:hosting": "node --test tests/hosting.test.mjs",
+    "test:live": "node tools/smoke-hosted.mjs",
     "test:security": "node --test tests/security.test.mjs",
     "demo:attack": "node tools/attack-demo.mjs",
     "lab:verify": "node tools/verify-seeds.mjs",
