@@ -27,8 +27,11 @@ export function openCapsule(capsule?: string): Store {
     }
     if (!Array.isArray(snapshot.entries.events)) throw new Error();
     store.events = snapshot.entries.events as Store['events'];
+    const rider = store.users.get('alex');
+    if (rider?.name === 'Alex Morgan') rider.name = 'Afaq Virk';
+    if (rider?.email === 'alex@huber.test') rider.email = 'afaq@huber.test';
     return store;
-  } catch { throw Object.assign(new Error('This demo session expired or was changed. Start a fresh demo.'), { status: 401 }); }
+  } catch { throw Object.assign(new Error('Your session expired. Refresh to start again.'), { status: 401 }); }
 }
 export function sealCapsule(store: Store): string {
   // Bound synthetic history so the browser-carried fixture stays small.
@@ -38,7 +41,7 @@ export function sealCapsule(store: Store): string {
   store.messages = new Map([...store.messages].filter(([ride]) => store.rides.has(ride)).slice(-12).map(([ride, messages]) => [ride, messages.slice(-32)]));
   const entries = Object.fromEntries(Object.entries(store).map(([name, value]) => [name, value instanceof Map ? [...value] : value]));
   const plaintext = Buffer.from(JSON.stringify({ version: 1, expiresAt: Date.now() + lifetime, entries } satisfies Snapshot));
-  if (plaintext.length > 262144) throw Object.assign(new Error('This demo is full. Start a fresh demo.'), { status: 413 });
+  if (plaintext.length > 262144) throw Object.assign(new Error('Your session is full. Close this tab and start again.'), { status: 413 });
   const iv = randomBytes(12), cipher = createCipheriv('aes-256-gcm', key(), iv);
   cipher.setAAD(Buffer.from('huber-demo-v1'));
   const encrypted = Buffer.concat([cipher.update(deflateSync(plaintext)), cipher.final()]);

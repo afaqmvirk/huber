@@ -7,7 +7,7 @@ const crcTable=Array.from({length:256},(_,i)=>{let c=i;for(let j=0;j<8;j++)c=(c&
 const crc=bytes=>{let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0;};
 const entries=[];
 function collect(relative){for(const item of readdirSync(join(root,relative),{withFileTypes:true})){const path=relative+'/'+item.name;if(item.isDirectory())collect(path);else if(item.isFile())entries.push([path.replaceAll('\\','/'),readFileSync(join(root,path))]);}}
-for(const directory of ['api','backend','shared','public','tests','tools'])collect(directory);
+for(const directory of ['api','backend','shared','public','tests','tools','frontend'])collect(directory);
 for(const name of ['package.json','package-lock.json','tsconfig.json','README.md','LICENSE','.gitignore','vercel.json','.vercelignore'])entries.push([name,readFileSync(join(root,name))]);
 const task=readFileSync(join(root,'public/demo.html'),'utf8').match(/<textarea id="grok-task"[^>]*>([\s\S]*?)<\/textarea>/)[1];
 entries.push(['GROK-TASK.txt',Buffer.from(task)]);

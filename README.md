@@ -13,7 +13,9 @@ npm start
 
 Open **http://127.0.0.1:8787**. The app has route search, three ride classes, booking, simulated driver chat, pickup/completion, cancellation, receipts, trip history, wallet promotions, profile preferences, and a second fake rider. The **Help** link opens the presenter guide with a timed demo and a prepared Grok task.
 
-All app code and fonts are served locally. OpenStreetMap tiles require internet; a local illustrated map is used if map tiles cannot load. Both maps show synthetic routes and horse locations. No real booking, charge, email, SMS, or driver dispatch occurs. State stays in memory and resets when the server restarts.
+All app code and fonts are served locally. The main map uses a custom, quiet MapLibre vector style with OpenFreeMap tiles. It shows twelve animated 3D horses on road segments taken from the loaded street geometry, and can zoom in to follow one horse. Map tiles and map-label glyphs require internet. Horse locations are synthetic; no real booking, charge, email, SMS, or driver dispatch occurs. Local server state stays in memory and resets when the server restarts.
+
+The original, articulated horse is in `public/models/huber-horse.glb`, including a looping `Walk` animation. `frontend/horse-layer.js` loads and recolours independent copies, animates their joints, and projects street positions onto the map. The motion control can pause movement, and the initial setting respects reduced-motion preferences. Run `npm run assets:build` after editing the model generator or renderer; generated browser modules and the GLB are committed for buildless hosting.
 
 ## Local security lab
 
@@ -56,10 +58,11 @@ Pushes to `main` deploy automatically from GitHub. GitHub Actions checks TypeScr
 
 ## Project layout
 
-- `public/`: buildless web page, self-hosted fonts and Leaflet assets.
+- `public/`: buildless web page, self-hosted fonts, MapLibre modules, renderer bundle and animated horse model.
+- `frontend/`: editable source for the Three.js horse renderer.
 - `backend/`: HTTP routes, in-memory fixtures, access and billing logic.
 - `shared/`: typed catalog, fare calculations, API contracts.
 - `tests/`: normal-flow tests and four security regressions.
 - `tools/`: exploit reproduction, packaging and independent review.
 
-UI reference: https://m.uber.com/go/home. Map attribution: OpenStreetMap contributors. Leaflet and DM Sans licences are included alongside their local assets. This constructed benchmark tests named behaviours; passing it does not establish general security or real-world reliability.
+UI reference: https://m.uber.com/go/home. Map attribution: OpenFreeMap, OpenMapTiles and OpenStreetMap contributors. MapLibre, Three.js, retained Leaflet assets and DM Sans licences are included alongside their local assets. This constructed benchmark tests named behaviours; passing it does not establish general security or real-world reliability.

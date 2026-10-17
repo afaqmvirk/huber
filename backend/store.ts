@@ -8,7 +8,7 @@ export type Store = {
 export const id = (prefix: string) => prefix + '_' + randomBytes(6).toString('hex');
 export function createStore(): Store {
   const users: User[] = [
-    { id: 'alex', name: 'Alex Morgan', email: 'alex@huber.test', role: 'rider', walletCents: 4800, quietRide: false, usedPromos: [] },
+    { id: 'alex', name: 'Afaq Virk', email: 'afaq@huber.test', role: 'rider', walletCents: 4800, quietRide: false, usedPromos: [] },
     { id: 'blair', name: 'Blair Reed', email: 'blair@huber.test', role: 'rider', walletCents: 2500, quietRide: true, usedPromos: [] },
     { id: 'stable', name: 'Pat from the stable', email: 'pat@huber.test', role: 'stable_admin', walletCents: 0, quietRide: false, usedPromos: [] },
   ];

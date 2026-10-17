@@ -7,13 +7,17 @@
     "node": ">=22.18.0"
   },
   "dependencies": {
-    "leaflet": "1.9.4"
+    "leaflet": "1.9.4",
+    "maplibre-gl": "6.14.0",
+    "three": "0.186.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "esbuild": "0.28.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
+    "assets:build": "node tools/create-horse-model.mjs && node tools/build-map-assets.mjs",
     "start": "node backend/server.ts",
     "dev": "node --watch backend/server.ts",
     "start:lan": "node tools/start-lan.mjs",

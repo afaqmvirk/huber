@@ -1,0 +1,42 @@
+.map-frame .map-top {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+.map-frame .nearby-badge {
+  display: inline-flex;
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid #ececec;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 2px 8px #0000000b;
+  color: #242424;
+  font-size: 11px;
+  font-weight: 500;
+  pointer-events: auto;
+}
+.nearby-badge i { width: 6px; height: 6px; background: #151515; border-radius: 50%; }
+.map-frame .map-layers { position: absolute; right: 17px; bottom: 107px; pointer-events: auto; }
+.map-caption { display: none; }
+.maplibregl-marker { z-index: 5; }
+.map-frame .maplibregl-ctrl-attrib { font-size: 8px; }
+@media (max-width: 650px) {
+  .map-frame .nearby-badge { top: 12px; left: 12px; padding: 8px 10px; font-size: 10px; }
+  .map-tools { top: 12px; right: 12px; gap: 6px; }
+  .map-tool { width: 33px; height: 33px; font-size: 11px; }
+  .walking-card { left: 12px; bottom: 42px; padding: 9px 10px; gap: 8px; max-width: calc(100% - 58px); border-radius: 10px; }
+  .walking-icon { width: 28px; height: 28px; }
+  .walking-icon svg { width: 20px; height: 20px; }
+  .walking-card strong { font-size: 10px; }
+  .walking-card>div>span { font-size: 8px; max-width: 132px; text-overflow: ellipsis; overflow: hidden; }
+  .walking-card>button { font-size: 9px; padding: 8px; margin-left: 0; }
+  .maplibregl-ctrl-group { display: none; }
+  .map-frame .map-layers { right: 12px; bottom: 52px; width: 33px; height: 33px; }
+  .maplibregl-ctrl-bottom-right { bottom: 24px; right: 3px; }
+  .route-pin>strong { font-size: 9px; padding: 6px 7px; }
+}

@@ -15,14 +15,15 @@ function send(res: ServerResponse, status: number, data: unknown) {
 }
 const PUBLIC = new URL('../public/', import.meta.url);
 const staticFiles: Record<string, string> = { '/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css', '/uber.css': 'uber.css', '/app.js': 'app.js', '/transport.js': 'transport.js', '/illustrations.js': 'illustrations.js', '/map.js': 'map.js', '/favicon.svg': 'favicon.svg', '/demo': 'demo.html', '/demo.js': 'demo.js', '/vendor/leaflet.js': 'vendor/leaflet.js', '/vendor/leaflet.css': 'vendor/leaflet.css' };
+Object.assign(staticFiles, { '/map.css': 'map.css', '/vendor/maplibre-gl.mjs': 'vendor/maplibre-gl.mjs', '/vendor/maplibre-gl-shared.mjs': 'vendor/maplibre-gl-shared.mjs', '/vendor/maplibre-gl-worker.mjs': 'vendor/maplibre-gl-worker.mjs', '/vendor/maplibre-gl.css': 'vendor/maplibre-gl.css', '/vendor/horse-layer.js': 'vendor/horse-layer.js', '/models/huber-horse.glb': 'models/huber-horse.glb' });
 async function staticResponse(path: string, res: ServerResponse) {
   const name = staticFiles[path] || (/^\/fonts\/DMSans_(400Regular|500Medium|600SemiBold|700Bold|800ExtraBold)\.ttf$/.test(path) ? path.slice(1) : null);
   if (!name) return false;
   const bytes = await readFile(new URL(name, PUBLIC));
-  const mime = name.endsWith('.html') ? 'text/html' : name.endsWith('.css') ? 'text/css' : name.endsWith('.js') ? 'text/javascript' : name.endsWith('.svg') ? 'image/svg+xml' : 'font/ttf';
+  const mime = name.endsWith('.html') ? 'text/html' : name.endsWith('.css') ? 'text/css' : /\.m?js$/.test(name) ? 'text/javascript' : name.endsWith('.svg') ? 'image/svg+xml' : name.endsWith('.glb') ? 'model/gltf-binary' : 'font/ttf';
   res.writeHead(200, { 'Content-Type': mime + (mime.startsWith('text/') ? '; charset=utf-8' : ''), 'Content-Length': bytes.length,
     'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'" });
+    'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org https://tiles.openfreemap.org; font-src 'self'; connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'" });
   res.end(bytes);
   return true;
 }
