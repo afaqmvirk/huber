@@ -1,0 +1,11 @@
+export type ServiceId = 'pony' | 'comfort' | 'carriage';
+export type RideStatus = 'arriving' | 'in_progress' | 'completed' | 'cancelled';
+export type Role = 'rider' | 'stable_admin';
+export type Place = { id: string; name: string; address: string; x: number; y: number; kind: 'landmark' | 'home' | 'work' };
+export type Service = { id: ServiceId; name: string; subtitle: string; eta: number; seats: number; baseCents: number; perKmCents: number; accent: string };
+export type Horse = { id: string; name: string; breed: string; driver: string; rating: string; rides: number; coat: string; mane: string; background: string; service: ServiceId; plate: string; x: number; y: number };
+export type User = { id: string; name: string; email: string; role: Role; walletCents: number; quietRide: boolean; usedPromos: string[] };
+export type Quote = { id: string; userId: string; pickupId: string; destinationId: string; serviceId: ServiceId; distanceKm: number; durationMinutes: number; fareCents: number; bookingFeeCents: number; expiresAt: number };
+export type Ride = { id: string; userId: string; quoteId: string; pickupId: string; destinationId: string; serviceId: ServiceId; horseId: string; fareCents: number; bookingFeeCents: number; distanceKm: number; durationMinutes: number; status: RideStatus; createdAt: string; payment: string };
+export type ChatMessage = { id: string; from: 'rider' | 'driver'; text: string; at: string };
+export type Bootstrap = { user: User; places: Place[]; services: Service[]; horses: Horse[]; rides: Ride[]; activeRide: Ride | null };

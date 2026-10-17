@@ -1,22 +1,31 @@
 {
   "name": "huber",
   "version": "1.0.0",
-  "main": "index.ts",
+  "description": "Huber — horse power, on demand. A local web app and synthetic security demo.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "dependencies": {
-    "expo": "~57.0.30",
-    "expo-status-bar": "~57.0.1",
-    "react": "19.2.3",
-    "react-native": "0.86.3"
+    "leaflet": "1.9.4"
   },
   "devDependencies": {
-    "@types/react": "~19.2.2",
+    "@types/node": "^26.6.5",
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start": "node backend/server.ts",
+    "dev": "node --watch backend/server.ts",
+    "start:lan": "node tools/start-lan.mjs",
+    "start:hosted": "node tools/start-hosted.ts",
+    "check": "tsc --noEmit",
+    "test": "node --test tests/functional.test.mjs",
+    "test:hosting": "node --test tests/hosting.test.mjs",
+    "test:security": "node --test tests/security.test.mjs",
+    "demo:attack": "node tools/attack-demo.mjs",
+    "lab:verify": "node tools/verify-seeds.mjs",
+    "lab:pack": "node tools/package-demo.mjs",
+    "lab:review": "node tools/verify-patch.mjs"
   },
   "private": true
 }

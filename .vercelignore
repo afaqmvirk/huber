@@ -1,0 +1,8 @@
+.git
+.runtime
+artifacts
+assets
+node_modules
+tests
+tools
+.env*
