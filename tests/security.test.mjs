@@ -27,7 +27,7 @@ test('SEC-03: editing a rider profile cannot change role, wallet or other privil
   assert.equal(current.role, 'rider', 'Mass assignment promoted a rider to administrator.');
   assert.equal(current.walletCents, 4800, 'Profile mutation changed the wallet.');
   assert.equal(current.id, 'alex', 'Profile mutation changed the authenticated identity.');
-  assert.equal(current.email, 'alex@huber.test', 'Profile mutation bypassed the email-change flow.');
+  assert.equal(current.email, 'afaq@huber.test', 'Profile mutation bypassed the email-change flow.');
   assert.deepEqual(current.usedPromos, [], 'Profile mutation changed promotion state.');
   assert.equal((await f.call('/api/admin/ledger', token)).status, 403);
   const allowed = await f.call('/api/me', token, 'PATCH', { name: 'A normal profile edit', quietRide: true });
